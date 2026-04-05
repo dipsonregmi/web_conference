@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Meet - Premium Web Conferencing</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Material Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PeerJS for WebRTC -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+</head>
+<body class="dark-theme">
+    
+    <!-- App Container -->
+    <div id="app">
+        
+        <!-- ============================== -->
+        <!-- LANDING PAGE                   -->
+        <!-- ============================== -->
+        <div id="landing-page" class="view active">
+            <header class="top-nav">
+                <div class="logo">
+                    <span class="material-symbols-rounded logo-icon">video_camera_front</span>
+                    <h1>Nexus Meet</h1>
+                </div>
+            </header>
+            
+            <main class="landing-main">
+                <div class="glass-panel main-panel">
+                    <h2>Premium Video Meetings. <br><span>Free for everyone.</span></h2>
+                    <p>Start your assignment showcase with state-of-the-art WebRTC conferencing.</p>
+                    
+                    <div class="action-buttons">
+                        <button id="btn-create-meeting" class="btn primary">
+                            <span class="material-symbols-rounded">video_call</span>
+                            Start a Meeting
+                        </button>
+                        
+                        <div class="join-box">
+                            <span class="material-symbols-rounded">keyboard</span>
+                            <input type="text" id="input-meeting-code" placeholder="Enter meeting code">
+                            <button id="btn-join-meeting" class="btn text">Join</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="demo-graphic">
+                    <div class="mock-ui">
+                        <div class="mock-video"></div>
+                        <div class="mock-controls">
+                            <div class="mock-btn"></div>
+                            <div class="mock-btn"></div>
+                            <div class="mock-btn accent"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- ============================== -->
+        <!-- ROOM VIEW                      -->
+        <!-- ============================== -->
+        <div id="room-page" class="view">
+            <header class="room-nav">
+                <div class="room-info">
+                    <div class="logo-small">
+                        <span class="material-symbols-rounded">video_camera_front</span>
+                    </div>
+                    <div class="meeting-details">
+                        <span class="meeting-title">Assignment Showcase Meeting</span>
+                        <div class="code-container">
+                            <span id="display-meeting-code" class="meeting-code">...</span>
+                            <button id="btn-copy-code" class="icon-btn tooltip" data-tooltip="Copy joining code">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                            <span class="host-badge" id="host-badge" style="display: none;">HOST</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="room-timers">
+                    <div class="timer" id="meeting-timer">00:00:00</div>
+                    <div id="recording-indicator" class="recording-indicator" style="display: none;">
+                        <span class="pulsing-dot"></span> REC
+                    </div>
+                </div>
+            </header>
+
+            <main class="room-main">
+                <div class="video-grid-container">
+                    <div id="video-grid" class="video-grid">
+                        <!-- Videos will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Right Sidebar for Chat & Participants -->
+                <aside id="sidebar" class="sidebar">
+                    <div class="sidebar-tabs">
+                        <button class="tab-btn active" data-tab="chat">
+                            <span class="material-symbols-rounded">chat</span> Chat
+                        </button>
+                        <button class="tab-btn" data-tab="participants">
+                            <span class="material-symbols-rounded">group</span> People <span id="people-count" class="badge">1</span>
+                        </button>
+                    </div>
+
+                    <!-- Chat Tab -->
+                    <div class="tab-content active" id="tab-chat">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="system-message">Welcome to the chat!</div>
+                        </div>
+                        <div class="chat-input-container">
+                            <input type="text" id="chat-input" placeholder="Send a message...">
+                            <button id="btn-send-chat" class="icon-btn primary">
+                                <span class="material-symbols-rounded">send</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Participants Tab -->
+                    <div class="tab-content" id="tab-participants">
+                        <div class="participants-list" id="participants-list">
+                            <!-- Participant items injected here -->
+                        </div>
+                    </div>
+                </aside>
+            </main>
+
+            <footer class="room-controls">
+                <div class="control-group">
+                    <span id="room-time" class="time-display">00:00</span>
+                </div>
+                
+                <div class="control-group main-controls">
+                    <button id="btn-toggle-mic" class="control-btn" data-tooltip="Toggle Microphone">
+                        <span class="material-symbols-rounded icon">mic</span>
+                    </button>
+                    <button id="btn-toggle-video" class="control-btn" data-tooltip="Toggle Camera">
+                        <span class="material-symbols-rounded icon">videocam</span>
+                    </button>
+                    <button id="btn-raise-hand" class="control-btn" data-tooltip="Raise Hand">
+                        <span class="material-symbols-rounded icon">front_hand</span>
+                    </button>
+                    <button id="btn-share-screen" class="control-btn" data-tooltip="Present Screen">
+                        <span class="material-symbols-rounded icon">present_to_all</span>
+                    </button>
+                    <button id="btn-record" class="control-btn host-only" data-tooltip="Record Meeting" style="display: none;">
+                        <span class="material-symbols-rounded icon">radio_button_checked</span>
+                    </button>
+                    <button id="btn-leave" class="control-btn danger" data-tooltip="Leave Meeting">
+                        <span class="material-symbols-rounded icon">call_end</span>
+                    </button>
+                </div>
+
+                <div class="control-group align-right">
+                    <button id="btn-toggle-sidebar" class="control-btn active" data-tooltip="Toggle Chat/Participants">
+                        <span class="material-symbols-rounded icon">info</span>
+                    </button>
+                </div>
+            </footer>
+        </div>
+
+        <!-- ============================== -->
+        <!-- COMPONENTS / NOTIFICATIONS     -->
+        <!-- ============================== -->
+        <div id="toast-container" class="toast-container"></div>
+
+    </div>
+
+    <!-- Main Logic -->
+    <script src="script.js"></script>
+</body>
+</html>
