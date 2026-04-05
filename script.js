@@ -6,6 +6,7 @@
 const landingPage = document.getElementById('landing-page');
 const roomPage = document.getElementById('room-page');
 const btnCreateMeeting = document.getElementById('btn-create-meeting');
+const inputUsername = document.getElementById('input-username');
 const inputMeetingCode = document.getElementById('input-meeting-code');
 const btnJoinMeeting = document.getElementById('btn-join-meeting');
 const displayMeetingCode = document.getElementById('display-meeting-code');
@@ -144,6 +145,7 @@ function initPeerJS(onOpenCallback) {
 
 // 3. Meeting Flows
 async function createMeeting() {
+    if (inputUsername.value.trim()) myName = inputUsername.value.trim();
     isHost = true;
     hostBadge.style.display = 'inline-block';
     btnRecord.style.display = 'flex'; // show record to host
@@ -163,6 +165,7 @@ async function createMeeting() {
 }
 
 async function joinMeeting() {
+    if (inputUsername.value.trim()) myName = inputUsername.value.trim();
     const code = inputMeetingCode.value.trim();
     if(!code) return showToast("Please enter a meeting code.", "error");
     
